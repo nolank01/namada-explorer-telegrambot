@@ -372,6 +372,8 @@ def help_command(update: Update, context: CallbackContext) -> None:
     help_text += "/tnx <hash> - Search txn\n"
     help_text += "=====================================================\n"
     help_text += "tpknam1qrszptsuy2epy4zp0edx7p7lq9uy0szxguqmch3jfl2n79v2aqu6gd3rjt7"
+    help_text += "=====================================================\n"
+    help_text += Due to the large number of users, wait 30-90 seconds for the server to process each command \n"
     update.effective_message.reply_text(help_text)
 
 
