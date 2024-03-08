@@ -20,15 +20,15 @@ PORT = int(os.environ.get('PORT', '8443'))
 def create_table(data, type) -> PrettyTable:
     try:
 
-        # Kiểm tra xem data có phải là chuỗi không
+       # Check if data is a string
         if isinstance(data, str):
-            # Nếu là chuỗi, chuyển đổi thành đối tượng Python
+            # If string, convert to Python object
             json_data = json.loads(data)
         elif isinstance(data, list):
-            # Nếu là danh sách, sử dụng trực tiếp
+           # If it's a list, use it directly
             json_data = data
         else:
-            # Nếu không phải là chuỗi hoặc danh sách, xử lý lỗi hoặc trả về
+            # If not a string or list, handle error or return
             raise ValueError("Invalid data format")
         
         if type == "topvalidators":
@@ -148,27 +148,27 @@ def topvalidators(update: Update, context: CallbackContext):
 
 def info(update: Update, context: CallbackContext) -> None:
     try:
-        # Lấy thông tin từ endpoint /api/v1/chain/parameter
+       # Get information from endpoint /api/v1/chain/parameters
         parameter_api_url = 'https://it.api.namada.red/api/v1/chain/parameter'
         parameter_response = requests.get(parameter_api_url)
         
-        # Lấy thông tin từ endpoint /api/v1/chain/info
+      # Get information from endpoint /api/v1/chain/info
         info_api_url = 'https://it.api.namada.red/api/v1/chain/info'
         info_response = requests.get(info_api_url)
         
-        # Kiểm tra xem cả hai request đều thành công
+       # Check that both requests were successful
         if parameter_response.status_code == 200 and info_response.status_code == 200:
             parameter_data = parameter_response.json()['parameters']
             info_data = info_response.json()
             
-            # Định dạng các giá trị
+            # Format values
             total_native_token_supply = int(parameter_data['total_native_token_supply']) / 1000000
             total_staked_native_token = int(parameter_data['total_staked_native_token']) / 1000000
             total_native_token_supply = round(total_native_token_supply, 2)
             total_staked_native_token = round(total_staked_native_token, 2)
             block_time = round(info_data['block_time'], 3)
             
-            # Tạo tin nhắn text với thông tin từ hai nguồn
+           # Create text messages with information from two sources
             message = f"Epoch: {parameter_data['epoch']}\n"
             message += f"Block time: {block_time}\n"
             message += f"Last fetch block height: {info_data['last_fetch_block_height']}\n"
@@ -178,7 +178,7 @@ def info(update: Update, context: CallbackContext) -> None:
             message += f"Total native token supply: {total_native_token_supply}\n"
             message += f"Total staked native token: {total_staked_native_token}\n"
             
-            # Gửi tin nhắn
+            # Send Message
             update.effective_message.reply_text(message)
         else:
             update.effective_message.reply_text("Error get data from API.")
@@ -265,15 +265,15 @@ def proposal_pending(update: Update, context: CallbackContext):
 
 def steward(update: Update, context: CallbackContext) -> None:
     try:
-        # Lấy danh sách stewards từ endpoint /api/v1/chain/pgf/stewards
+       # Get the list of stewards from the /api/v1/chain/pgf/stewards endpoint
         steward_api_url = 'https://it.api.namada.red/api/v1/chain/pgf/stewards'
         steward_response = requests.get(steward_api_url)
         
-        # Kiểm tra xem request có thành công không
+       # Check if the request was successful
         if steward_response.status_code == 200:
             stewards = steward_response.json()['stewards']
             
-            # Tạo tin nhắn với danh sách stewards
+           # Create messages with stewards list
             message = f"List of Stewards | Total: {len(stewards)}\n"
             message += "\n".join(stewards)
             
@@ -286,7 +286,7 @@ def steward(update: Update, context: CallbackContext) -> None:
         
 def pgf(update: Update, context: CallbackContext) -> None:
     try:
-        # Lấy thông tin từ endpoint /api/v1/chain/parameter
+       
         parameter_api_url = 'https://it.api.namada.red/api/v1/chain/parameter'
         parameter_response = requests.get(parameter_api_url)
         
@@ -294,7 +294,7 @@ def pgf(update: Update, context: CallbackContext) -> None:
         steward_api_url = 'https://it.api.namada.red/api/v1/chain/pgf/stewards'
         steward_response = requests.get(steward_api_url)
         
-        # Kiểm tra xem cả hai request đều thành công
+       
         if parameter_response.status_code == 200 and steward_response.status_code == 200:
             parameter_data = parameter_response.json()['parameters']
             stewards = steward_response.json()['stewards']              
@@ -314,16 +314,16 @@ def pgf(update: Update, context: CallbackContext) -> None:
 
 def transaction(update: Update, context: CallbackContext) -> None:
     try:
-        # Lấy mã hash từ tin nhắn của người dùng
+        # Get the hash code from the user's message
         hash_value = context.args[0]
         
-        # Tạo URL để gửi yêu cầu
+       # Generate URL to send request
         api_url = f'https://api-namada.cosmostation.io/tx/{hash_value}'
         
-        # Gửi yêu cầu API
+       # Send API request
         response = requests.get(api_url)
         
-        # Kiểm tra xem yêu cầu có thành công không
+       # Check if the request was successful
         if response.status_code == 200:
             tx_data = response.json()
             
@@ -335,7 +335,7 @@ def transaction(update: Update, context: CallbackContext) -> None:
             message += f"Code: {tx_data['code']}\n"
             message += f"Data: {tx_data['data']}\n"
             
-            # Kiểm tra nếu có dữ liệu giao dịch cụ thể
+            # Check if specific transaction data is available
             if 'tx' in tx_data:
                 message += "Transaction Details:\n"
                 # Lặp qua từng loại giao dịch và thêm thông tin vào tin nhắn
@@ -344,7 +344,7 @@ def transaction(update: Update, context: CallbackContext) -> None:
                     for key, value in tx_details.items():
                         message += f"{key}: {value}\n"
             
-            # Gửi tin nhắn với thông tin giao dịch
+           # Send messages with transaction information
             update.effective_message.reply_text(message)
         else:
             update.effective_message.reply_text("Failed to fetch transaction data.")
