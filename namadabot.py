@@ -358,10 +358,9 @@ def transaction(update: Update, context: CallbackContext) -> None:
 
 def help_command(update: Update, context: CallbackContext) -> None:
     help_text = "WELCOME TO NAMADA BOT EXPLORER - ADANAMLABS\n"
-    help_text += "=================================================================\n"
+    help_text += "===================================================\n"
     help_text += "List of commands:\n"
     help_text += "/info - Display status and information blockchain\n"
-    help_text += "/tnx <hash> - Search txn\n"
     help_text += "/topvalidator - Display list of Top 100 Validators\n"
     help_text += "/steward - Display list of Stewards\n"
     help_text += "/pgf - Display infomation of PGF\n"
@@ -369,8 +368,10 @@ def help_command(update: Update, context: CallbackContext) -> None:
     help_text += "/pendingproposals - Display pending proposals\n"
     help_text += "/votingproposals - Display voting proposals\n"
     help_text += "/help - Display list of commands and descriptions\n"
-    help_text += "====================================================================\n"
-    help_text += "adanam"
+    help_text += "================== SEARCH TXN ==================\n"
+    help_text += "/tnx <hash> - Search txn\n"
+    help_text += "=====================================================\n"
+    help_text += "tpknam1qrszptsuy2epy4zp0edx7p7lq9uy0szxguqmch3jfl2n79v2aqu6gd3rjt7"
     update.effective_message.reply_text(help_text)
 
 
